@@ -1,0 +1,38 @@
+import dayjs from "dayjs";
+import { formInstance } from "../formInstance";
+/**
+ * Gửi đơn xin nghỉ phép
+ * @param {Object} data - Dữ liệu theo dạng LeaveApplication
+ * @returns {Promise<any>}
+ */
+export async function createLeaveApplication(data) {
+  const formData = new FormData();
+
+  // Chuyển các giá trị Dayjs thành string (ISO hoặc format API yêu cầu)
+  formData.append("maximum_leave_day", data.maximum_leave_day);
+  formData.append("leave_day_taken", data.leave_day_taken);
+  formData.append("remaining_leave_day", data.remaining_leave_day);
+  formData.append(
+    "application_date",
+    dayjs(data.application_date).format("YYYY-MM-DD")
+  );
+  formData.append("start_date", dayjs(data.start_date).format("YYYY-MM-DD"));
+  formData.append("end_date", dayjs(data.end_date).format("YYYY-MM-DD"));
+  formData.append("reason", data.reason);
+  formData.append("approver_id", data.approver_id);
+  formData.append("leave_day", data.leave_day);
+  formData.append("substitute_person_id", data.substitute_person_id);
+  formData.append("leave_type_id", data.leave_type_id);
+  formData.append("related_person_id", data.related_person_id);
+  formData.append("proposed_status_id", data.proposed_status_id);
+  formData.append("paid_rate_id", data.paid_rate_id);
+  formData.append("note", data.note);
+
+  // File
+  if (data.attached_file) {
+    formData.append("attached_file", data.attached_file);
+  }
+
+  const res = await formInstance.post("/hrm_leave_application", formData);
+  return res.data;
+}
